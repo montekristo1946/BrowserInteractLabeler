@@ -19,8 +19,8 @@ namespace BrowserInteractLabeler.Infrastructure
         private static readonly object _lockerDataChanges = new object();
 
         private string _rootDirImages =
-            "/mnt/Disk_1/TMP/IMG";   
-        //  "/mnt/Disk_D/TMP/01.09.2021/Img/";
+         //   "/mnt/Disk_1/TMP/IMG";   
+          "/mnt/Disk_D/TMP/01.09.2021/Img/";
            // "/mnt/Disk_D/Jupyter/Torch/vae.pytorch/data/celeba/images/";
            
            internal IEnumerable<PaletteData> _palettesData = new[]

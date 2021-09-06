@@ -25,6 +25,8 @@ namespace BrowserInteractLabeler.Component
         [Inject] internal KeyPressImageGridHandler KeyPressImageGridHandler { get; set; }
         [Inject] internal KeyPressPaletteGridHandler KeyPressPaletteGridHandler { get; set; }
 
+        [Parameter] public int Width { get; set; } = 0;
+        [Parameter] public int Height { get; set; } = 0;
         
         private readonly ILogger _logger = Log.ForContext<Tools>();
 
@@ -38,9 +40,7 @@ namespace BrowserInteractLabeler.Component
         private Canvas2DContext _currentCanvasContext;
 
         internal string Image64 { get; set; } = string.Empty;
-
-        internal Size WindowsImgSize { get; set; } = new Size(1550, 800);//TODO: move to Config page
-
+        
 
         protected override async Task OnInitializedAsync()
         {

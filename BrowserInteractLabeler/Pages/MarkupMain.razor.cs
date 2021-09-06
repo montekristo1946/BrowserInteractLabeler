@@ -1,12 +1,16 @@
 using System;
 using System.Collections.Generic;
+using System.Drawing;
 using System.Linq;
+using System.Reflection;
 using System.Threading.Tasks;
 using BrowserInteractLabeler.Common;
 using BrowserInteractLabeler.Component;
 using BrowserInteractLabeler.Infrastructure;
 using Microsoft.AspNetCore.Components;
 using Microsoft.AspNetCore.Components.Web;
+using Microsoft.JSInterop;
+using Newtonsoft.Json;
 using Serilog;
 
 namespace BrowserInteractLabeler.Pages
@@ -23,11 +27,15 @@ namespace BrowserInteractLabeler.Pages
         
         [Inject]
         internal KeyPressImageGridHandler KeyPressImageGridHandler { get; set; }
+        
+        [Inject] internal IJSRuntime _JSRuntime { get; set; }
 
         internal ElementReference refMainPanel;
         internal ImagesGridViewComponent _refImagesGridViewComponent;
         internal PaletteGridViewComponent _refPaletteGridViewComponent;
-        
+
+        internal Size SizeImgForm = new Size(1560, 950);
+     
         internal void HandleKeyDown(KeyboardEventArgs e)
         {
             switch (e.Key.ToLower())

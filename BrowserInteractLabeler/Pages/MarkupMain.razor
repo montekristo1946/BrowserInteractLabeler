@@ -2,15 +2,15 @@
 @inherits MarkupMainComponent
 
 @code {
-
+    
 }
 
 
-<div tabindex="0" @onkeydown="HandleKeyDown" @ref="@refMainPanel" class="container-fluid px-0 py-0 ">
+<div id="mainDiv" tabindex="0" @onkeydown="HandleKeyDown" @ref="@refMainPanel" class="container-fluid px-0 py-0 ">
     <div class="row">
-        <div class="border border-info col-xl-10 overflow-auto px-1 py-1" style="height: 1000px">
+        <div id="ImageMainId" class="border border-info col-xl-10 overflow-auto px-1 py-1" style="height: 1000px">
             @{
-                <DrawingConvasComponent></DrawingConvasComponent>
+                <DrawingConvasComponent Height="@SizeImgForm.Height" Width="@SizeImgForm.Width"></DrawingConvasComponent>
             }
 
         </div>
