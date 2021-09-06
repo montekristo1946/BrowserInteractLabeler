@@ -53,7 +53,7 @@ namespace BrowserInteractLabeler
                 .ConfigureWebHostDefaults(webBuilder =>
                 {
                     webBuilder.UseStartup<Startup>();
-                    webBuilder.UseUrls("http://10.11.1.7:5000");
+                    webBuilder.UseUrls("http://localhost:5000");
                 });
     }
 }
