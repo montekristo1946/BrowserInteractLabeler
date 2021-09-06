@@ -1,0 +1,37 @@
+@using Blazor.Extensions
+@inherits PaletteGridViewComponentModel
+
+
+
+<div class=" container-fluid px-0 py-0 text-center">
+    <b>Palette:</b>
+</div>
+@{
+    foreach (var palette in PaletteData)
+    {
+        var buttonId = $"{palette.ClassId}{palette.NameClass}";
+        var styleButton = GetActualStyle(palette,_selectButton);
+        BECanvasComponent canvasReference = null;
+
+        <div class=" container-fluid px-1 py-1">
+            <button @onclick="@(() => ButtonClickAsync(palette))"
+                    class="btn @styleButton btn-block text-left btn-sm px-0 py-0 overflow-hidden "
+                    id="@buttonId">
+
+                <div class="row  container-fluid text-left">
+                    <div class=" col-xl-1 overflow-hidden px-1 py-0 ">
+                        @palette.ClassId
+                    </div>
+                    <div class=" col-xl-1 overflow-hidden px-1 py-0 ">
+                        <BrashColorComponent ColorComponent="@palette.ColorClass"></BrashColorComponent>
+
+                    </div>
+                    <div class=" col-xl-10 overflow-hidden px-1 py-0 ">
+                        @palette.NameClass
+
+                    </div>
+                </div>
+            </button>
+        </div>
+    }
+}

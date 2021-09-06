@@ -1,0 +1,24 @@
+@inherits ImagesGridViewComponentModel
+@using System.IO
+
+<div class=" container-fluid px-0 py-0 overflow-auto" style="height: 100%">
+    @{
+        <b>Count Images: @Images.Count()</b>
+        var percent = 100.0 / 15;
+        
+        foreach (var imageName in Images)
+        {
+            var fileName = Path.GetFileName(imageName);
+            if (fileName is null)
+            {
+                _logger.Error("[GridViewComponentV2Component] File name bad {FileName}", imageName);
+                continue;
+            }
+            var styleButton = GetActualStyle(imageName,_selectButton);
+            
+                <button @onclick="@(() => ButtonClickAsync(imageName))" class="btn @styleButton btn-sm btn-block text-left" id="@fileName">
+                                    @fileName
+                                </button>
+        }
+    }
+</div>

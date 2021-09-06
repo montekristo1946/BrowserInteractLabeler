@@ -1,0 +1,77 @@
+@page "/SettingSetup"
+@inherits SettingSetupComponent
+
+
+<div class="container-fluid px-0 py-0 ">
+    <div class="row">
+        <div class=" col-xl-12 overflow-auto  text-center">
+            <h3>Setting Setup</h3>
+        </div>
+    </div>
+<br>
+    <div class="row">
+        <div class=" col-xl-12 overflow-auto ">
+            <li><code>Path to Images folder</code>: @_rootPathImgDir</li>
+        </div>
+    </div>
+
+<div class="row">
+    <div class=" col-xl-12 overflow-auto ">
+        <input value="@_rootPathImgDir"
+               @onchange="@((ChangeEventArgs __e) => _rootPathImgDir = __e.Value.ToString())"
+               type="text" class="form-control" name="InputName" id="InputName" placeholder="Path to Images folder" required/>
+    </div>
+</div>
+<br>
+@{
+    <h4>Keymap:</h4>
+    var palettes = _markupControlService.GetPaletteAsync().Result;
+    <div class="row">
+        <div class=" col-xl-1 overflow-auto px-1 py-1">
+            Class ID:
+        </div>
+        <div class=" col-xl-1 overflow-auto px-1 py-1">
+            Color:
+        </div>
+    </div>
+
+    foreach (var palette in palettes)
+    {
+        <div class="row">
+            <div class=" col-xl-1 overflow-auto px-1 py-1">
+            @palette.ClassId
+            </div>
+            <div class=" col-xl-1 overflow-auto px-1 py-1">
+            @palette.ColorClass
+            </div>
+        </div>
+    }
+    <div class="row">
+        <div class=" col-xl-1 overflow-auto px-1 py-1">
+            Enter (key)
+        </div>
+        <div class=" col-xl-1 overflow-auto px-1 py-1">
+            Nex file
+        </div>
+    </div>
+    
+}
+
+
+
+<br>
+    <div class="row">
+        <div class=" col-xl-2 overflow-auto px-1 py-1">
+            <button class="btn  btn-outline-secondary" @onclick="@PreviousPage">
+                <span class="textNormal"></span> &lt;&lt; Выбор типа разметки
+            </button>
+        </div>
+        <div class=" col-xl-2 overflow-auto px-1 py-1">
+            <button class="btn  btn-outline-secondary" @onclick="@GoToNextPage">
+                 К разметки &gt;&gt;
+            </button>
+        </div>
+    </div>
+
+</div>
+

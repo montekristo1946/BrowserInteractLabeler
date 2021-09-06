@@ -1,0 +1,35 @@
+@page "/ChoosingMarkupType"
+@inject NavigationManager NavigationManager
+@using BrowserInteractLabeler.Common
+@inherits ChoosingMarkupTypeComponent
+
+
+<div class=" container-fluid px-0 py-0 " style="height: 400px">
+    <div class="row">
+        <div class=" col-xl-12 overflow-auto  text-center">
+            <h3>Choose the type of markup</h3>
+        </div>
+    </div>
+    <br>
+    <div class=" row" style="height: 30%">
+        <div class=" col-xl-2 overflow-auto text-center">
+        </div>
+        <div class=" col-xl-8 overflow-auto text-center">
+            <button class="btn  btn-outline-secondary btn-lg btn-block" @onclick="() => RedirectToSettingSetup(TypeMarkup.PointMark)" style="height: 100%">
+                Dot marking
+            </button>
+        </div>
+    </div>
+    <br>
+    <div class="row" style="height: 30%">
+        <div class=" col-xl-2 overflow-auto text-center">
+        </div>
+        <div class=" col-xl-8 overflow-auto text-center">
+            <button class="btn  btn-outline-secondary btn-lg btn-block" @onclick="() => RedirectToSettingSetup(TypeMarkup.PointMark)" style="height: 100%">
+                Markup with Rectangles
+            </button>
+        </div>
+    </div>
+
+
+</div>

@@ -1,0 +1,12 @@
+@inherits DrawingConvasComponentModel
+@using Blazor.Extensions.Canvas
+@using Blazor.Extensions.Canvas.Canvas2D
+@using Newtonsoft.Json
+@using Newtonsoft.Json.Linq
+@inject IJSRuntime JS
+
+
+<div @ref="@DivCanvas" @onclick="@OnClick" class="px-0 py-0">
+    <img  hidden @ref="@ImageMap" src="@Image64"   class="px-0 py-0"/>
+    <BECanvas @ref="@CanvasReference" Height="@WindowsImgSize.Height" Width="@WindowsImgSize.Width"></BECanvas>
+</div>
