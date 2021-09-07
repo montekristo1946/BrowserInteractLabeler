@@ -16,5 +16,7 @@ namespace BrowserInteractLabeler.Infrastructure
         Task<string> GetPathRootFolderImagesAsync();
         Task SearchAllImagesAsync();
         Task<IEnumerable<PaletteData>> GetPaletteAsync();
+        Task SetPointAsync(int classId, Point point,TypeMarkup typeDrawing, string fullImgName);
+        Task<ExportData[]> GetAllPointsAsync();
     }
 }

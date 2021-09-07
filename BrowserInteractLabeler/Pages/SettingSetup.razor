@@ -11,7 +11,7 @@
 <br>
     <div class="row">
         <div class=" col-xl-12 overflow-auto ">
-            <li><code>Path to Images folder</code>: @_rootPathImgDir</li>
+            <li><code>Path to Images folder</code>: <code>@_rootPathImgDir</code></li>
         </div>
     </div>
 
@@ -23,29 +23,32 @@
     </div>
 </div>
 <br>
-@{
-    <h4>Keymap:</h4>
-    var palettes = _markupControlService.GetPaletteAsync().Result;
-    <div class="row">
-        <div class=" col-xl-1 overflow-auto px-1 py-1">
-            Class ID:
-        </div>
-        <div class=" col-xl-1 overflow-auto px-1 py-1">
-            Color:
-        </div>
-    </div>
 
-    foreach (var palette in palettes)
-    {
+    <h4>Keymap:</h4>
+    <div class="border px-3" >
+    
         <div class="row">
-            <div class=" col-xl-1 overflow-auto px-1 py-1">
-            @palette.ClassId
+            <div class=" col-xl-1 px-1 py-1">
+                Class ID:
             </div>
-            <div class=" col-xl-1 overflow-auto px-1 py-1">
-            @palette.ColorClass
+            <div class=" col-xl-1  px-1 py-1">
+                Color:
             </div>
         </div>
-    }
+        @{
+            var palettes = _markupControlService.GetPaletteAsync().Result;
+            foreach (var palette in palettes)
+            {
+                <div class="row">
+                    <div class=" col-xl-1  px-1 py-1">
+                        @palette.ClassId
+                    </div>
+                    <div class=" col-xl-1  px-1 py-1">
+                        @palette.ColorClass
+                    </div>
+                </div>
+            }
+        }
     <div class="row">
         <div class=" col-xl-1 overflow-auto px-1 py-1">
             Enter (key)
@@ -54,8 +57,8 @@
             Nex file
         </div>
     </div>
-    
-}
+     </div>
+
 
 
 

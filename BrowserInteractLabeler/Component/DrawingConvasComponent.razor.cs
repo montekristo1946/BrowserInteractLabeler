@@ -1,5 +1,6 @@
 using System;
 using System.IO;
+using System.Linq;
 using System.Threading.Tasks;
 using Blazor.Extensions;
 using Blazor.Extensions.Canvas.Canvas2D;
@@ -7,7 +8,6 @@ using BrowserInteractLabeler.Infrastructure;
 using Microsoft.AspNetCore.Components;
 using Microsoft.AspNetCore.Components.Web;
 using Newtonsoft.Json;
-using SixLabors.ImageSharp;
 using Microsoft.JSInterop;
 using System.Reflection;
 using BrowserInteractLabeler.Common;
@@ -19,28 +19,27 @@ namespace BrowserInteractLabeler.Component
     public class DrawingConvasComponentModel : ComponentBase, IDisposable
     {
         [Inject] internal IMarkupControlService _markupControlService { get; set; }
-        
         [Inject] public IJSRuntime JSRuntime { get; set; }
-
         [Inject] internal KeyPressImageGridHandler KeyPressImageGridHandler { get; set; }
         [Inject] internal KeyPressPaletteGridHandler KeyPressPaletteGridHandler { get; set; }
 
         [Parameter] public int Width { get; set; } = 0;
         [Parameter] public int Height { get; set; } = 0;
-        
+
         private readonly ILogger _logger = Log.ForContext<Tools>();
 
         private string _currentNameDrawingImg = string.Empty;
-        private PaletteData _currenIdPalette = new PaletteData();
+        private PaletteData _currentPalette = new PaletteData();
 
         internal ElementReference ImageMap { get; set; }
         internal ElementReference DivCanvas { get; set; }
         internal BECanvasComponent CanvasReference { get; set; }
-        
+
         private Canvas2DContext _currentCanvasContext;
 
         internal string Image64 { get; set; } = string.Empty;
-        
+
+        private const string _moqImg = "./Resource/error_1.png";
 
         protected override async Task OnInitializedAsync()
         {
@@ -52,11 +51,11 @@ namespace BrowserInteractLabeler.Component
         {
             await InvokeAsync(() =>
             {
-                if (KeyPressPaletteGridHandler.CurrentPalette == _currenIdPalette)
+                if (KeyPressPaletteGridHandler.CurrentPalette == _currentPalette)
                     return;
 
-                _currenIdPalette = KeyPressPaletteGridHandler.CurrentPalette;
-                Console.WriteLine($"[DrawingConvasComponentModel:KeyPressPaletteGridOnChange] {_currenIdPalette}");
+                _currentPalette = KeyPressPaletteGridHandler.CurrentPalette;
+                Console.WriteLine($"[DrawingConvasComponentModel:KeyPressPaletteGridOnChange] {_currentPalette}");
             });
         }
 
@@ -86,8 +85,7 @@ namespace BrowserInteractLabeler.Component
         {
             try
             {
-                var moqImg = "./Resource/error_1.png";
-                var img = await File.ReadAllBytesAsync(moqImg);
+                var img = await File.ReadAllBytesAsync(_moqImg);
                 Image64 = "data:image/jpg;base64," + Convert.ToBase64String(img);
                 StateHasChanged();
                 await _currentCanvasContext.ClearRectAsync(0, 0, CanvasReference.Width, CanvasReference.Height);
@@ -118,6 +116,25 @@ namespace BrowserInteractLabeler.Component
             await _currentCanvasContext.ClearRectAsync(0, 0, CanvasReference.Width, CanvasReference.Height);
             await _currentCanvasContext.DrawImageAsync(ImageMap, 0, 0, CanvasReference.Width,
                 CanvasReference.Height);
+
+            var loadData = await _markupControlService.GetAllPointsAsync();
+            var currentBlock = loadData.Where(p => p.FullImgName == _currentNameDrawingImg);
+            var allPalette = await _markupControlService.GetPaletteAsync();
+            foreach (var block in currentBlock)
+            {
+                var currentPalette = allPalette?.FirstOrDefault(p => p.ClassId == block.ClassID);
+                if (currentPalette is null)
+                {
+                    _logger.Error("[DrawingConvasComponentModel:DrawingImg] Palette not Found Palette {IdPalette}",
+                        block.ClassID);
+                    continue;
+                }
+
+                foreach (var point in block.Points)
+                {
+                    DrawingPoint(point, _currentCanvasContext, currentPalette);
+                }
+            }
         }
 
         internal async void OnClick(MouseEventArgs eventArgs)
@@ -135,10 +152,6 @@ namespace BrowserInteractLabeler.Component
             var mouseX = eventArgs.ClientX - mousePositionData.ActiveRectangle.X;
             var mouseY = eventArgs.ClientY - mousePositionData.ActiveRectangle.Y;
 
-
-          //  Console.WriteLine($"x:{mouseX},Y:{mouseY}; ClientX:{eventArgs.ClientX} ClientY:{eventArgs.ClientY}  " +
-          //                    $"x_rect:{mousePositionData.ActiveRectangle.X}; y_rect:{mousePositionData.ActiveRectangle.Y}");
-            //Console.WriteLine($"OnClick {_keyPressHandler.CurrentImages}");
             var typeDrawing = await _markupControlService.GetTypeMarkupAsync();
 
             switch (typeDrawing)
@@ -146,14 +159,17 @@ namespace BrowserInteractLabeler.Component
                 case TypeMarkup.None:
                     break;
                 case TypeMarkup.PointMark:
-                    DrawingPoint(mouseX, mouseY,_currentCanvasContext,_currenIdPalette);
+                    var point = new Point(mouseX, mouseY);
+                    DrawingPoint(point, _currentCanvasContext, _currentPalette);
+                    await _markupControlService.SetPointAsync(_currentPalette.ClassId, point, typeDrawing,
+                        _currentNameDrawingImg);
                     break;
                 case TypeMarkup.Rectangle:
                     break;
                 default:
                     throw new ArgumentOutOfRangeException();
             }
-            
+
 
             StateHasChanged();
 
@@ -161,12 +177,15 @@ namespace BrowserInteractLabeler.Component
             // await JSRuntime.InvokeAsync<string>("SendAlert", "Test Alert");
         }
 
-        private async void DrawingPoint(double mouseX, double mouseY, Canvas2DContext currentCanvasContext, PaletteData palette)
+
+        private async void DrawingPoint(Point point,
+            Canvas2DContext currentCanvasContext,
+            PaletteData palette)
         {
-            await _currentCanvasContext.BeginPathAsync();
-            await _currentCanvasContext.SetFillStyleAsync(palette.ColorClass);
-            await _currentCanvasContext.ArcAsync(mouseX, mouseY, palette.Radius, 0, Math.PI * 2, false);
-            await _currentCanvasContext.FillAsync();
+            await currentCanvasContext.BeginPathAsync();
+            await currentCanvasContext.SetFillStyleAsync(palette.ColorClass);
+            await currentCanvasContext.ArcAsync(point.X, point.Y, palette.Radius, 0, Math.PI * 2, false);
+            await currentCanvasContext.FillAsync();
         }
 
         public void Dispose()
